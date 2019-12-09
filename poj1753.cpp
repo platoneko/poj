@@ -36,7 +36,8 @@ Sample Output
 
 4
 */
-#include<iostream>
+#include <iostream>
+#include <cstring>
 #define INF 65535
 using namespace std;
 
@@ -69,7 +70,7 @@ int main()
     answer = INF; //初始化要翻无穷多次
     
     for (int i = 0; i < 16; ++i) {
-        for(int j=0;j<16;j++){visit[j]=0;}
+        memset(visit, 0, sizeof(visit));
         search(i, 0, -1); //搜索翻这么多棋子的所有情况
         if(answer < INF) break; //有答案就不用搜了
     }
@@ -135,20 +136,20 @@ void search(int totalNum, int doneNum, int pre)//要翻的个数，已翻的个�
     if(answer < INF)
         return;
     
-         if(doneNum == totalNum) //当翻棋的数量达到了，就进行判断
-         {
-             flip(); //翻棋
-             if(judge()) //判断全为同一种颜色
-                 answer = totalNum;    //记录答案
-             else
-                 flip(); //否则将棋盘恢复原状
-             return;
-         }
+        if(doneNum == totalNum) //当翻棋的数量达到了，就进行判断
+        {
+            flip(); //翻棋
+            if(judge()) //判断全为同一种颜色
+                answer = totalNum;    //记录答案
+            else
+                flip(); //否则将棋盘恢复原状
+            return;
+        }
     
-         for(int i = pre+1; i < 16; ++i) //从上一个翻的棋子的下一个开始选择，这样可以防止出现重复的情况
-         {
-             visit[i] = 1;//选中的标记为 1
-             search(totalNum, doneNum+1, i); //搜索翻下一个的情况，
-             visit[i] = 0; //清除标记
-         }
+        for(int i = pre+1; i < 16; ++i) //从上一个翻的棋子的下一个开始选择，这样可以防止出现重复的情况
+        {
+            visit[i] = 1;//选中的标记为 1
+            search(totalNum, doneNum+1, i); //搜索翻下一个的情况，
+            visit[i] = 0; //清除标记
+        }
 }
