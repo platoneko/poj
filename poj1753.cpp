@@ -118,7 +118,7 @@ void flip()
 
 int judge()
 {
-    int x,y;;
+    int x,y;
     for (int i = 1; i < 16; ++i)
     {
         x = i/4;
