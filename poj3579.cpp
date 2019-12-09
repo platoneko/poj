@@ -23,55 +23,44 @@ Sample Input
 Sample Output
 1 8
 */
-#include <iostream>
-#include <cmath>
+#include <cstdio>
+#include <algorithm>
 using namespace std;
 
-void solution(int n, int *array);
-int select(int n, int begin, int end, int *array);
+int array[100005];
+int n;
+int median;
+
+bool check(int x) {
+    int cnt = 0;
+    for(int i=0; i<n; ++i) {
+       int t = upper_bound(array, array+n, array[i]+x) - array;  // 比a[i]+x小的元素的个数
+       cnt += (t-i-1);  // 排除a[i]之前的那些元素,共有i+1;
+       if(cnt >= median) return true;  
+    }
+    return false;
+}
 
 int main() {
-    int n;
-    while (cin >> n) {
-        int array[n];
-        for (int i = 0; i < n; ++i) {
-            cin >> array[i];
+    while (scanf("%d", &n) != EOF) {
+        for (int i=0; i<n; ++i) {
+            scanf("%d", &array[i]);
         }
-        solution(n, array);
+        sort(array, array+n);
+        int totalLength = n*(n-1)>>1;
+        median = (totalLength+1)>>1;
+        int leftVal = 0, rightVal = array[n-1] - array[0];
+        int ans;
+        while (leftVal <= rightVal) {
+            int midVal = (leftVal+rightVal)>>1;
+            if(check(midVal)) {
+                ans = midVal;
+                rightVal = midVal-1;
+            } else {
+                leftVal = midVal+1;
+            }
+         }
+         printf("%d\n",ans);
     }
-    cout << endl;
     return 0;
-}
-
-void solution(int n, int *array) {
-    int size = n*(n-1)/2;
-    cout << "size " << size << endl;
-    int diffArray[size];
-    for (int i = 0, k = 0; i < n; ++i) {
-        for (int j = i+1; j < n; ++j) {
-            diffArray[k++] = abs(array[i] - array[j]);
-        }
-    }
-    cout << select((size-1)/2, 0, size, diffArray) << " ";
-}
-
-inline void exchange(int &a, int &b) {
-    int tmp = a;
-    a = b;
-    b = tmp;
-}
-
-int select(int n, int begin, int end, int *array) {
-    int pivot = array[begin];
-    int left = begin, right = end;
-    while (left < right) {
-        while (--right > left && array[right] >= pivot);
-        exchange(array[left], array[right]);   
-        while (left < right && array[++left] <= pivot);
-        exchange(array[left], array[right]);    
-    }
-    // assert(left == right);
-    if (left == n) return array[left];
-    if (n < left) return select(n, begin, left, array);
-    else return select(n, left+1, end, array);
 }
